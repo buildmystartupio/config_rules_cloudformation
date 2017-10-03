@@ -1,0 +1,423 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether your resources have the tags that you specify.",
+        "InputParameters": {
+          "tag1Key": {
+            "Fn::If": [
+              "tag1Key",
+              {
+                "Ref": "tag1Key"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag1Value": {
+            "Fn::If": [
+              "tag1Value",
+              {
+                "Ref": "tag1Value"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag2Key": {
+            "Fn::If": [
+              "tag2Key",
+              {
+                "Ref": "tag2Key"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag2Value": {
+            "Fn::If": [
+              "tag2Value",
+              {
+                "Ref": "tag2Value"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag3Key": {
+            "Fn::If": [
+              "tag3Key",
+              {
+                "Ref": "tag3Key"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag3Value": {
+            "Fn::If": [
+              "tag3Value",
+              {
+                "Ref": "tag3Value"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag4Key": {
+            "Fn::If": [
+              "tag4Key",
+              {
+                "Ref": "tag4Key"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag4Value": {
+            "Fn::If": [
+              "tag4Value",
+              {
+                "Ref": "tag4Value"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag5Key": {
+            "Fn::If": [
+              "tag5Key",
+              {
+                "Ref": "tag5Key"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag5Value": {
+            "Fn::If": [
+              "tag5Value",
+              {
+                "Ref": "tag5Value"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag6Key": {
+            "Fn::If": [
+              "tag6Key",
+              {
+                "Ref": "tag6Key"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "tag6Value": {
+            "Fn::If": [
+              "tag6Value",
+              {
+                "Ref": "tag6Value"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::EC2::CustomerGateway",
+            "AWS::EC2::Instance",
+            "AWS::EC2::InternetGateway",
+            "AWS::EC2::NetworkAcl",
+            "AWS::EC2::NetworkInterface",
+            "AWS::EC2::RouteTable",
+            "AWS::EC2::SecurityGroup",
+            "AWS::EC2::Subnet",
+            "AWS::EC2::Volume",
+            "AWS::EC2::VPC",
+            "AWS::EC2::VPNConnection",
+            "AWS::EC2::VPNGateway",
+            "AWS::ACM::Certificate",
+            "AWS::RDS::DBInstance",
+            "AWS::RDS::DBSecurityGroup",
+            "AWS::RDS::DBSnapshot",
+            "AWS::RDS::DBSubnetGroup",
+            "AWS::RDS::EventSubscription",
+            "AWS::S3::Bucket"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "REQUIRED_TAGS"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "required-tags",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "tag1Key": {
+      "Type": "String",
+      "Default": "CostCenter",
+      "Description": "Key of the required tag.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "tag1Value": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Optional value of the required tag. Separate multiple values with commas."
+    },
+    "tag2Key": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Key of a second required tag."
+    },
+    "tag2Value": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Optional value of the second required tag. Separate multiple values with commas."
+    },
+    "tag3Key": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Key of a third required tag."
+    },
+    "tag3Value": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Optional value of the third required tag. Separate multiple values with commas."
+    },
+    "tag4Key": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Key of a fourth required tag."
+    },
+    "tag4Value": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Optional value of the fourth required tag. Separate multiple values with commas."
+    },
+    "tag5Key": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Key of a fifth required tag."
+    },
+    "tag5Value": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Optional value of the fifth required tag. Separate multiple values with commas."
+    },
+    "tag6Key": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Key of a sixth required tag."
+    },
+    "tag6Value": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Optional value of the sixth required tag. Separate multiple values with commas."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "tag1Key"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "tag1Value",
+            "tag2Key",
+            "tag2Value",
+            "tag3Key",
+            "tag3Value",
+            "tag4Key",
+            "tag4Value",
+            "tag5Key",
+            "tag5Value",
+            "tag6Key",
+            "tag6Value"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "tag1Key": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag1Key"
+            }
+          ]
+        }
+      ]
+    },
+    "tag1Value": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag1Value"
+            }
+          ]
+        }
+      ]
+    },
+    "tag2Key": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag2Key"
+            }
+          ]
+        }
+      ]
+    },
+    "tag2Value": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag2Value"
+            }
+          ]
+        }
+      ]
+    },
+    "tag3Key": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag3Key"
+            }
+          ]
+        }
+      ]
+    },
+    "tag3Value": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag3Value"
+            }
+          ]
+        }
+      ]
+    },
+    "tag4Key": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag4Key"
+            }
+          ]
+        }
+      ]
+    },
+    "tag4Value": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag4Value"
+            }
+          ]
+        }
+      ]
+    },
+    "tag5Key": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag5Key"
+            }
+          ]
+        }
+      ]
+    },
+    "tag5Value": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag5Value"
+            }
+          ]
+        }
+      ]
+    },
+    "tag6Key": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag6Key"
+            }
+          ]
+        }
+      ]
+    },
+    "tag6Value": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tag6Value"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

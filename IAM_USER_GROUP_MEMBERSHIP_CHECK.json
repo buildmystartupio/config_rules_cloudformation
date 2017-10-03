@@ -1,0 +1,83 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether IAM users are members of at least one IAM group.",
+        "InputParameters": {
+          "groupNames": {
+            "Fn::If": [
+              "groupNames",
+              {
+                "Ref": "groupNames"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::IAM::User"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "IAM_USER_GROUP_MEMBERSHIP_CHECK"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "iam-user-group-membership-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "groupNames": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Comma separated list of IAM groups in which IAM users must be members."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": []
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "groupNames"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "groupNames": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "groupNames"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

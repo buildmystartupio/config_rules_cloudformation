@@ -1,0 +1,144 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether Amazon Redshift clusters have the specified maintenance settings.",
+        "InputParameters": {
+          "allowVersionUpgrade": {
+            "Fn::If": [
+              "allowVersionUpgrade",
+              {
+                "Ref": "allowVersionUpgrade"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "preferredMaintenanceWindow": {
+            "Fn::If": [
+              "preferredMaintenanceWindow",
+              {
+                "Ref": "preferredMaintenanceWindow"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "automatedSnapshotRetentionPeriod": {
+            "Fn::If": [
+              "automatedSnapshotRetentionPeriod",
+              {
+                "Ref": "automatedSnapshotRetentionPeriod"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::Redshift::Cluster"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "redshift-cluster-maintenancesettings-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "allowVersionUpgrade": {
+      "Type": "String",
+      "Default": "true",
+      "Description": "Allow version upgrade is enabled.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "preferredMaintenanceWindow": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Scheduled maintenance window for clusters (for example, Mon:09:30-Mon:10:00)."
+    },
+    "automatedSnapshotRetentionPeriod": {
+      "Type": "String",
+      "Default": "1",
+      "Description": "Number of days to retain automated snapshots."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "allowVersionUpgrade"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "preferredMaintenanceWindow",
+            "automatedSnapshotRetentionPeriod"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "allowVersionUpgrade": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "allowVersionUpgrade"
+            }
+          ]
+        }
+      ]
+    },
+    "preferredMaintenanceWindow": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "preferredMaintenanceWindow"
+            }
+          ]
+        }
+      ]
+    },
+    "automatedSnapshotRetentionPeriod": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "automatedSnapshotRetentionPeriod"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether EBS volumes are attached to EC2 instances.",
+        "InputParameters": {
+          "deleteOnTermination": {
+            "Fn::If": [
+              "deleteOnTermination",
+              {
+                "Ref": "deleteOnTermination"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::EC2::Volume"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "EC2_VOLUME_INUSE_CHECK"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "ec2-volume-inuse-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "deleteOnTermination": {
+      "Type": "String",
+      "Default": "",
+      "Description": "EBS volumes are marked for deletion when an instance is terminated."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": []
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "deleteOnTermination"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "deleteOnTermination": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "deleteOnTermination"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

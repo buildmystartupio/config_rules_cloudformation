@@ -1,0 +1,293 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether CloudWatch alarms have at least one alarm action, one INSUFFICIENT_DATA action, or one OK action enabled. Optionally, checks whether any of the actions matches one of the specified ARNs.",
+        "InputParameters": {
+          "alarmActionRequired": {
+            "Fn::If": [
+              "alarmActionRequired",
+              {
+                "Ref": "alarmActionRequired"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "insufficientDataActionRequired": {
+            "Fn::If": [
+              "insufficientDataActionRequired",
+              {
+                "Ref": "insufficientDataActionRequired"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "okActionRequired": {
+            "Fn::If": [
+              "okActionRequired",
+              {
+                "Ref": "okActionRequired"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "action1": {
+            "Fn::If": [
+              "action1",
+              {
+                "Ref": "action1"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "action2": {
+            "Fn::If": [
+              "action2",
+              {
+                "Ref": "action2"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "action3": {
+            "Fn::If": [
+              "action3",
+              {
+                "Ref": "action3"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "action4": {
+            "Fn::If": [
+              "action4",
+              {
+                "Ref": "action4"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "action5": {
+            "Fn::If": [
+              "action5",
+              {
+                "Ref": "action5"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::CloudWatch::Alarm"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "CLOUDWATCH_ALARM_ACTION_CHECK"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "cloudwatch-alarm-action-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "alarmActionRequired": {
+      "Type": "String",
+      "Default": "true",
+      "Description": "Alarms have at least one action.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "insufficientDataActionRequired": {
+      "Type": "String",
+      "Default": "true",
+      "Description": "Alarms have at least one action when the alarm transitions to the INSUFFICIENT_DATA state from any other state.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "okActionRequired": {
+      "Type": "String",
+      "Default": "false",
+      "Description": "Alarms have at least one action when the alarm transitions to an OK state from any other state.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "action1": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The action to execute, specified as an ARN."
+    },
+    "action2": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The action to execute, specified as an ARN."
+    },
+    "action3": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The action to execute, specified as an ARN."
+    },
+    "action4": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The action to execute, specified as an ARN."
+    },
+    "action5": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The action to execute, specified as an ARN."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "alarmActionRequired",
+            "insufficientDataActionRequired",
+            "okActionRequired"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "action1",
+            "action2",
+            "action3",
+            "action4",
+            "action5"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "alarmActionRequired": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "alarmActionRequired"
+            }
+          ]
+        }
+      ]
+    },
+    "insufficientDataActionRequired": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "insufficientDataActionRequired"
+            }
+          ]
+        }
+      ]
+    },
+    "okActionRequired": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "okActionRequired"
+            }
+          ]
+        }
+      ]
+    },
+    "action1": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "action1"
+            }
+          ]
+        }
+      ]
+    },
+    "action2": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "action2"
+            }
+          ]
+        }
+      ]
+    },
+    "action3": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "action3"
+            }
+          ]
+        }
+      ]
+    },
+    "action4": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "action4"
+            }
+          ]
+        }
+      ]
+    },
+    "action5": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "action5"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

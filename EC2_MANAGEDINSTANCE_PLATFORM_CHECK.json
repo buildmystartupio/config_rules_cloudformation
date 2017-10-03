@@ -1,0 +1,171 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether EC2 managed instances have the desired configurations.",
+        "InputParameters": {
+          "platformType": {
+            "Fn::If": [
+              "platformType",
+              {
+                "Ref": "platformType"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "platformVersion": {
+            "Fn::If": [
+              "platformVersion",
+              {
+                "Ref": "platformVersion"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "agentVersion": {
+            "Fn::If": [
+              "agentVersion",
+              {
+                "Ref": "agentVersion"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "platformName": {
+            "Fn::If": [
+              "platformName",
+              {
+                "Ref": "platformName"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::SSM::ManagedInstanceInventory"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "EC2_MANAGEDINSTANCE_PLATFORM_CHECK"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "ec2-managedinstance-platform-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "platformType": {
+      "Type": "String",
+      "Description": "Platform type (for example, \u0027Linux\u0027).",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "platformVersion": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Platform version (for example, \u00272016.09\u0027)."
+    },
+    "agentVersion": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Agent version (for example, \u00272.0.433.0\u0027)."
+    },
+    "platformName": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "platformType"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "platformVersion",
+            "agentVersion",
+            "platformName"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "platformType": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "platformType"
+            }
+          ]
+        }
+      ]
+    },
+    "platformVersion": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "platformVersion"
+            }
+          ]
+        }
+      ]
+    },
+    "agentVersion": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "agentVersion"
+            }
+          ]
+        }
+      ]
+    },
+    "platformName": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "platformName"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether the specified resource type has a CloudWatch alarm for the specified metric. For resource type, you can specify EBS volumes, EC2 instances, RDS clusters, or S3 buckets.",
+        "InputParameters": {
+          "resourceType": {
+            "Fn::If": [
+              "resourceType",
+              {
+                "Ref": "resourceType"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "metricName": {
+            "Fn::If": [
+              "metricName",
+              {
+                "Ref": "metricName"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {},
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "CLOUDWATCH_ALARM_RESOURCE_CHECK"
+        },
+        "MaximumExecutionFrequency": {
+          "Ref": "MaximumExecutionFrequency"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "cloudwatch-alarm-resource-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "MaximumExecutionFrequency": {
+      "Type": "String",
+      "Default": "TwentyFour_Hours",
+      "Description": "The frequency that you want AWS Config to run evaluations for the rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required.",
+      "AllowedValues": [
+        "One_Hour",
+        "Three_Hours",
+        "Six_Hours",
+        "Twelve_Hours",
+        "TwentyFour_Hours"
+      ]
+    },
+    "resourceType": {
+      "Type": "String",
+      "Description": "AWS resource type. The value can be one of the following: AWS::EC2::Volume, AWS::EC2::Instance, AWS::RDS::DBCluster, or AWS::S3::Bucket.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "metricName": {
+      "Type": "String",
+      "Description": "The name for the metric associated with the alarm (for example, \u0027CPUUtilization\u0027 for EC2 instances).",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "resourceType",
+            "metricName"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": []
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "resourceType": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "resourceType"
+            }
+          ]
+        }
+      ]
+    },
+    "metricName": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "metricName"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

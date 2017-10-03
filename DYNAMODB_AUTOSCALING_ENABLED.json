@@ -1,0 +1,245 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "This rule checks whether Auto Scaling is enabled on your DynamoDB tables. Optionally you can set the read and write capacity units for the table.",
+        "InputParameters": {
+          "minProvisionedReadCapacity": {
+            "Fn::If": [
+              "minProvisionedReadCapacity",
+              {
+                "Ref": "minProvisionedReadCapacity"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "maxProvisionedReadCapacity": {
+            "Fn::If": [
+              "maxProvisionedReadCapacity",
+              {
+                "Ref": "maxProvisionedReadCapacity"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "targetReadUtilization": {
+            "Fn::If": [
+              "targetReadUtilization",
+              {
+                "Ref": "targetReadUtilization"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "minProvisionedWriteCapacity": {
+            "Fn::If": [
+              "minProvisionedWriteCapacity",
+              {
+                "Ref": "minProvisionedWriteCapacity"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "maxProvisionedWriteCapacity": {
+            "Fn::If": [
+              "maxProvisionedWriteCapacity",
+              {
+                "Ref": "maxProvisionedWriteCapacity"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "targetWriteUtilization": {
+            "Fn::If": [
+              "targetWriteUtilization",
+              {
+                "Ref": "targetWriteUtilization"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::DynamoDB::Table"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "DYNAMODB_AUTOSCALING_ENABLED"
+        },
+        "MaximumExecutionFrequency": {
+          "Ref": "MaximumExecutionFrequency"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "dynamodb-autoscaling-enabled",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "MaximumExecutionFrequency": {
+      "Type": "String",
+      "Default": "TwentyFour_Hours",
+      "Description": "The frequency that you want AWS Config to run evaluations for the rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required.",
+      "AllowedValues": [
+        "One_Hour",
+        "Three_Hours",
+        "Six_Hours",
+        "Twelve_Hours",
+        "TwentyFour_Hours"
+      ]
+    },
+    "minProvisionedReadCapacity": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Minimum provisioned capacity."
+    },
+    "maxProvisionedReadCapacity": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Maximum provisioned capacity."
+    },
+    "targetReadUtilization": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Target utilization of read capacity"
+    },
+    "minProvisionedWriteCapacity": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Minimum provisioned capacity."
+    },
+    "maxProvisionedWriteCapacity": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Maximum provisioned capacity."
+    },
+    "targetWriteUtilization": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Target utilization of write capacity"
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": []
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "minProvisionedReadCapacity",
+            "maxProvisionedReadCapacity",
+            "targetReadUtilization",
+            "minProvisionedWriteCapacity",
+            "maxProvisionedWriteCapacity",
+            "targetWriteUtilization"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "minProvisionedReadCapacity": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "minProvisionedReadCapacity"
+            }
+          ]
+        }
+      ]
+    },
+    "maxProvisionedReadCapacity": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "maxProvisionedReadCapacity"
+            }
+          ]
+        }
+      ]
+    },
+    "targetReadUtilization": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "targetReadUtilization"
+            }
+          ]
+        }
+      ]
+    },
+    "minProvisionedWriteCapacity": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "minProvisionedWriteCapacity"
+            }
+          ]
+        }
+      ]
+    },
+    "maxProvisionedWriteCapacity": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "maxProvisionedWriteCapacity"
+            }
+          ]
+        }
+      ]
+    },
+    "targetWriteUtilization": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "targetWriteUtilization"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks instances for specified tenancy.",
+        "InputParameters": {
+          "tenancy": {
+            "Fn::If": [
+              "tenancy",
+              {
+                "Ref": "tenancy"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "imageId": {
+            "Fn::If": [
+              "imageId",
+              {
+                "Ref": "imageId"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "hostId": {
+            "Fn::If": [
+              "hostId",
+              {
+                "Ref": "hostId"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::EC2::Instance"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "DESIRED_INSTANCE_TENANCY"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "desired-instance-tenancy",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "tenancy": {
+      "Type": "String",
+      "Description": "Desired tenancy of the instances. Valid values are DEDICATED, HOST and DEFAULT.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "imageId": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The rule evaluates instances launched only from AMIs with the specified IDs. Separate multiple AMI IDs with commas."
+    },
+    "hostId": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The IDs of the EC2 Dedicated Hosts on which the instances are meant to be launched. Separate multiple Host IDs with commas."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "tenancy"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "imageId",
+            "hostId"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "tenancy": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "tenancy"
+            }
+          ]
+        }
+      ]
+    },
+    "imageId": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "imageId"
+            }
+          ]
+        }
+      ]
+    },
+    "hostId": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "hostId"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

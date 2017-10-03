@@ -1,0 +1,114 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether all of the specified applications are installed on the instance. Optionally, specify the minimum acceptable version. Optionally, specify the platform to apply the rule only to instances running that platform.",
+        "InputParameters": {
+          "applicationNames": {
+            "Fn::If": [
+              "applicationNames",
+              {
+                "Ref": "applicationNames"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "platformType": {
+            "Fn::If": [
+              "platformType",
+              {
+                "Ref": "platformType"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::SSM::ManagedInstanceInventory"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "EC2_MANAGEDINSTANCE_APPLICATIONS_REQUIRED"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "ec2-managedinstance-applications-required",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "applicationNames": {
+      "Type": "String",
+      "Description": "Comma-separated list of application names. Optionally, specify versions appended with \u0027:\u0027 (for example, \u0027Chrome:0.5.3, Firefox\u0027).",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "platformType": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Platform type (for example, \u0027Linux\u0027)."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "applicationNames"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "platformType"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "applicationNames": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "applicationNames"
+            }
+          ]
+        }
+      ]
+    },
+    "platformType": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "platformType"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

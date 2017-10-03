@@ -1,0 +1,114 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether instances managed by Amazon EC2 Systems Manager are configured to collect blacklisted inventory types.",
+        "InputParameters": {
+          "inventoryNames": {
+            "Fn::If": [
+              "inventoryNames",
+              {
+                "Ref": "inventoryNames"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "platformType": {
+            "Fn::If": [
+              "platformType",
+              {
+                "Ref": "platformType"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::SSM::ManagedInstanceInventory"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "EC2_MANAGEDINSTANCE_INVENTORY_BLACKLISTED"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "ec2-managedinstance-inventory-blacklisted",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "inventoryNames": {
+      "Type": "String",
+      "Description": "Comma separated list of Systems Manager inventory types (for example, \u0027AWS:Network, AWS:WindowsUpdate\u0027).",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "platformType": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Platform type (for example, \u0027Linux\u0027)."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "inventoryNames"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "platformType"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "inventoryNames": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "inventoryNames"
+            }
+          ]
+        }
+      ]
+    },
+    "platformType": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "platformType"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether versioning is enabled for your S3 buckets.",
+        "InputParameters": {
+          "isMfaDeleteEnabled": {
+            "Fn::If": [
+              "isMfaDeleteEnabled",
+              {
+                "Ref": "isMfaDeleteEnabled"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::S3::Bucket"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "S3_BUCKET_VERSIONING_ENABLED"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "s3-bucket-versioning-enabled",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "isMfaDeleteEnabled": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": []
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "isMfaDeleteEnabled"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "isMfaDeleteEnabled": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "isMfaDeleteEnabled"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether running instances are using specified AMIs.",
+        "InputParameters": {
+          "amisByTagKeyAndValue": {
+            "Fn::If": [
+              "amisByTagKeyAndValue",
+              {
+                "Ref": "amisByTagKeyAndValue"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::EC2::Instance"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "APPROVED_AMIS_BY_TAG"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "approved-amis-by-tag",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "amisByTagKeyAndValue": {
+      "Type": "String",
+      "Default": "tag-key:tag-value,other-tag-key",
+      "Description": "Specify AMIs by tag (comma separated list up to 10; for example, \u0027tag-key:tag-value\u0027).",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "amisByTagKeyAndValue"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": []
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "amisByTagKeyAndValue": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "amisByTagKeyAndValue"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether CloudWatch alarms with the given metric name have the specified settings.",
+        "InputParameters": {
+          "metricName": {
+            "Fn::If": [
+              "metricName",
+              {
+                "Ref": "metricName"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "threshold": {
+            "Fn::If": [
+              "threshold",
+              {
+                "Ref": "threshold"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "evaluationPeriods": {
+            "Fn::If": [
+              "evaluationPeriods",
+              {
+                "Ref": "evaluationPeriods"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "period": {
+            "Fn::If": [
+              "period",
+              {
+                "Ref": "period"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "comparisonOperator": {
+            "Fn::If": [
+              "comparisonOperator",
+              {
+                "Ref": "comparisonOperator"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "statistic": {
+            "Fn::If": [
+              "statistic",
+              {
+                "Ref": "statistic"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::CloudWatch::Alarm"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "CLOUDWATCH_ALARM_SETTINGS_CHECK"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "cloudwatch-alarm-settings-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "metricName": {
+      "Type": "String",
+      "Description": "The name for the metric associated with the alarm.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "threshold": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The value against which the specified statistic is compared."
+    },
+    "evaluationPeriods": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The number of periods over which data is compared to the specified threshold."
+    },
+    "period": {
+      "Type": "String",
+      "Default": "300",
+      "Description": "The period, in seconds, during which the specified statistic is applied."
+    },
+    "comparisonOperator": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The operation for comparing the specified statistic and threshold (for example, \u0027GreaterThanThreshold\u0027)."
+    },
+    "statistic": {
+      "Type": "String",
+      "Default": "",
+      "Description": "The statistic for the metric associated with the alarm (for example, \u0027Average\u0027 or \u0027Sum\u0027)."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "metricName"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "threshold",
+            "evaluationPeriods",
+            "period",
+            "comparisonOperator",
+            "statistic"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "metricName": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "metricName"
+            }
+          ]
+        }
+      ]
+    },
+    "threshold": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "threshold"
+            }
+          ]
+        }
+      ]
+    },
+    "evaluationPeriods": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "evaluationPeriods"
+            }
+          ]
+        }
+      ]
+    },
+    "period": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "period"
+            }
+          ]
+        }
+      ]
+    },
+    "comparisonOperator": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "comparisonOperator"
+            }
+          ]
+        }
+      ]
+    },
+    "statistic": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "statistic"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

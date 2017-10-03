@@ -1,0 +1,112 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether logging is enabled for your S3 buckets.",
+        "InputParameters": {
+          "targetBucket": {
+            "Fn::If": [
+              "targetBucket",
+              {
+                "Ref": "targetBucket"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "targetPrefix": {
+            "Fn::If": [
+              "targetPrefix",
+              {
+                "Ref": "targetPrefix"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::S3::Bucket"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "S3_BUCKET_LOGGING_ENABLED"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "s3-bucket-logging-enabled",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "targetBucket": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Target S3 bucket for storing server access logs."
+    },
+    "targetPrefix": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Prefix of the S3 bucket for storing server access logs."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": []
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "targetBucket",
+            "targetPrefix"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "targetBucket": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "targetBucket"
+            }
+          ]
+        }
+      ]
+    },
+    "targetPrefix": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "targetPrefix"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

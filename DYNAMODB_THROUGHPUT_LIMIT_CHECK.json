@@ -1,0 +1,125 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether provisioned DynamoDB throughput is approaching the maximum limit for your account.",
+        "InputParameters": {
+          "accountRCUThresholdPercentage": {
+            "Fn::If": [
+              "accountRCUThresholdPercentage",
+              {
+                "Ref": "accountRCUThresholdPercentage"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "accountWCUThresholdPercentage": {
+            "Fn::If": [
+              "accountWCUThresholdPercentage",
+              {
+                "Ref": "accountWCUThresholdPercentage"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {},
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "DYNAMODB_THROUGHPUT_LIMIT_CHECK"
+        },
+        "MaximumExecutionFrequency": {
+          "Ref": "MaximumExecutionFrequency"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "dynamodb-throughput-limit-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "MaximumExecutionFrequency": {
+      "Type": "String",
+      "Default": "TwentyFour_Hours",
+      "Description": "The frequency that you want AWS Config to run evaluations for the rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required.",
+      "AllowedValues": [
+        "One_Hour",
+        "Three_Hours",
+        "Six_Hours",
+        "Twelve_Hours",
+        "TwentyFour_Hours"
+      ]
+    },
+    "accountRCUThresholdPercentage": {
+      "Type": "String",
+      "Default": "80",
+      "Description": "Percentage of provisioned read capacity units for your account. When this value is reached, the rule is marked as noncompliant."
+    },
+    "accountWCUThresholdPercentage": {
+      "Type": "String",
+      "Default": "80",
+      "Description": "Percentage of provisioned write capacity units for your account. When this value is reached, the rule is marked as noncompliant."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": []
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "accountRCUThresholdPercentage",
+            "accountWCUThresholdPercentage"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "accountRCUThresholdPercentage": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "accountRCUThresholdPercentage"
+            }
+          ]
+        }
+      ]
+    },
+    "accountWCUThresholdPercentage": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "accountWCUThresholdPercentage"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

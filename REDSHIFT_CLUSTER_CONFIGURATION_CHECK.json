@@ -1,0 +1,146 @@
+{
+  "Resources": {
+    "AWSConfigRule": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigRuleName"
+        },
+        "Description": "Checks whether Amazon Redshift clusters have the specified settings.",
+        "InputParameters": {
+          "clusterDbEncrypted": {
+            "Fn::If": [
+              "clusterDbEncrypted",
+              {
+                "Ref": "clusterDbEncrypted"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "loggingEnabled": {
+            "Fn::If": [
+              "loggingEnabled",
+              {
+                "Ref": "loggingEnabled"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          "nodeTypes": {
+            "Fn::If": [
+              "nodeTypes",
+              {
+                "Ref": "nodeTypes"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::Redshift::Cluster"
+          ]
+        },
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "REDSHIFT_CLUSTER_CONFIGURATION_CHECK"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "ConfigRuleName": {
+      "Type": "String",
+      "Default": "redshift-cluster-configuration-check",
+      "Description": "The name that you assign to the AWS Config rule.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "clusterDbEncrypted": {
+      "Type": "String",
+      "Default": "true",
+      "Description": "Database encryption is enabled.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "loggingEnabled": {
+      "Type": "String",
+      "Default": "true",
+      "Description": "Audit logging is enabled.",
+      "MinLength": "1",
+      "ConstraintDescription": "This parameter is required."
+    },
+    "nodeTypes": {
+      "Type": "String",
+      "Default": "dc1.large",
+      "Description": "Specify node type."
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Required"
+          },
+          "Parameters": [
+            "clusterDbEncrypted",
+            "loggingEnabled"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Optional"
+          },
+          "Parameters": [
+            "nodeTypes"
+          ]
+        }
+      ]
+    }
+  },
+  "Conditions": {
+    "clusterDbEncrypted": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "clusterDbEncrypted"
+            }
+          ]
+        }
+      ]
+    },
+    "loggingEnabled": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "loggingEnabled"
+            }
+          ]
+        }
+      ]
+    },
+    "nodeTypes": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            "",
+            {
+              "Ref": "nodeTypes"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
